@@ -1,7 +1,7 @@
 services:
   openresty:
     image: openresty/openresty:alpine
-    container_name: openresty
+    container_name: lecosas-java-spring-3-openresty
     ports:
       - "9999:9999"
     volumes:
@@ -19,11 +19,11 @@ services:
       resources:
         limits:
           cpus: "0.3"
-          memory: "60MB"
+          memory: "30MB"
 
   backend-01: &backend
-    image: lecosas/rinha-backend-2025-java-spring-graalvm:0.3
-    container_name: backend-01
+    image: lecosas/rinha-backend-2025-java-spring-2:0.1
+    container_name: lecosas-java-spring-3-backend-01
     hostname: backend-01
     networks:
       - backend
@@ -55,11 +55,11 @@ services:
       resources:
         limits:
           cpus: "0.55"
-          memory: "130MB"
+          memory: "140MB"
 
   backend-02:
     <<: *backend
-    container_name: backend-02
+    container_name: lecosas-java-spring-3-backend-02
     hostname: backend-02
     environment:
       - SPRING_PROFILES_ACTIVE=prod
@@ -84,7 +84,7 @@ services:
 
   redis:
     image: redis:7-alpine
-    container_name: redis
+    container_name: lecosas-java-spring-3-redis
     command: redis-server --save "" --appendonly no --maxmemory 30Mb --maxmemory-policy allkeys-lru --tcp-keepalive 60 --timeout 0
     networks:
       - backend

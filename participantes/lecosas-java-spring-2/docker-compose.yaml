@@ -18,14 +18,17 @@ services:
           memory: "30MB"
 
   backend-01: &backend
-    image: lecosas/rinha-backend-2025-java-spring-2:0.1
+    image: lecosas/rinha-backend-2025-java-spring-2:0.2
     container_name: lecosas-java-spring-2-backend-01
     hostname: backend-01
+    # pull_policy: always
+    # ports:
+    #   - "9999:8080"
     networks:
       - backend
       - payment-processor
     environment:
-      #- SPRING_PROFILES_ACTIVE=prod
+      - SPRING_PROFILES_ACTIVE=prod
       - PAYMENT_BACKEND_MAIN_INSTANCE=true
       - PAYMENT_BACKEND_WARMUP_CYCLES=500
       - PAYMENT_BACKEND_WORKER_FALLBACK_DELAY=5
@@ -54,8 +57,10 @@ services:
     <<: *backend
     container_name: lecosas-java-spring-2-backend-02
     hostname: backend-02
+    # ports:
+    #   - "9998:8080"
     environment:
-      #- SPRING_PROFILES_ACTIVE=prod
+      - SPRING_PROFILES_ACTIVE=prod
       - PAYMENT_BACKEND_MAIN_INSTANCE=false
       - PAYMENT_BACKEND_WARMUP_CYCLES=500
       - PAYMENT_BACKEND_WORKER_FALLBACK_DELAY=5
@@ -76,6 +81,8 @@ services:
     image: redis:7-alpine
     container_name: lecosas-java-spring-2-redis
     command: redis-server --save "" --appendonly no --maxmemory 30Mb --maxmemory-policy allkeys-lru --tcp-keepalive 60 --timeout 0
+    ports:
+      - "6379:6379"
     networks:
       - backend
     healthcheck:

@@ -4,9 +4,8 @@
 - **Linguagem:** Java
 - **Framework:** Spring Boot 3
 - **Armazenamento:** Redis
-- **Load Balancer:** Nginx/OpenResty
+- **Load Balancer:** Nginx
 - **Orquestração:** Docker Compose
-- **Outros:** Lua
 
 ## Como rodar
 1. Suba o docker-compose dos Payment Processors primeiro (conforme instruções do repositório oficial).

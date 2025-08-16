@@ -1,13 +1,11 @@
 services:
-  haproxy:
-    image: haproxy:latest
-    container_name: graalvm-4-direct-haproxy
-    command: ["/bin/sh", "/usr/local/bin/wait-for-sockets.sh"]
+  nginx:
+    image: nginx:alpine
+    container_name: graalvm-4-direct-sock-nginx
     ports:
       - "9999:9999"
     volumes:
-      - ./haproxy.cfg:/usr/local/etc/haproxy/haproxy.cfg:ro
-      - ./wait-for-sockets.sh:/usr/local/bin/wait-for-sockets.sh:ro
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
       - sockets:/sockets
     depends_on:
       - backend-01
@@ -22,7 +20,7 @@ services:
 
   backend-01: &backend
     image: lecosas/rinha-backend-2025-java-spring-graalvm:0.4-direct-sock
-    container_name: graalvm-4-direct-haproxy-backend-01
+    container_name: graalvm-4-direct-sock-backend-01
     hostname: backend-01
     # pull_policy: always
     volumes:
@@ -68,7 +66,7 @@ services:
 
   backend-02:
     <<: *backend
-    container_name: graalvm-4-direct-haproxy-backend-02
+    container_name: graalvm-4-direct-sock-backend-02
     hostname: backend-02
     environment:
       - SOCKET_NAME=api2
@@ -100,7 +98,7 @@ services:
 
   redis:
     image: redis:7-alpine
-    container_name: graalvm-4-direct-haproxy-redis
+    container_name: graalvm-4-direct-sock-redis
     command: redis-server --save "" --appendonly no --maxmemory 30Mb --maxmemory-policy allkeys-lru --tcp-keepalive 60 --timeout 0
     # ports:
     #   - "6379:6379"
@@ -116,6 +114,7 @@ services:
         limits:
           cpus: "0.1"
           memory: "30MB" #Change in command line too.
+
 volumes:
   sockets:
 

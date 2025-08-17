@@ -1,7 +1,7 @@
 services:
   nginx:
     image: nginx:alpine
-    container_name: graalvm-4-direct-nginx
+    container_name: graalvm-4-direct-final-nginx
     ports:
       - "9999:9999"
     volumes:
@@ -14,31 +14,31 @@ services:
     deploy:
       resources:
         limits:
-          cpus: "0.3"
+          cpus: "0.2"
           memory: "60MB"
 
   backend-01: &backend
     image: lecosas/rinha-backend-2025-java-spring-graalvm:0.4-direct
-    container_name: graalvm-4-direct-backend-01
+    container_name: graalvm-4-direct-final-backend-01
     hostname: backend-01
-    pull_policy: always
+    #pull_policy: always
     networks:
       - backend
       - payment-processor
     environment:
       - SPRING_PROFILES_ACTIVE=prod
       - PAYMENT_BACKEND_MAIN_INSTANCE=true
-      - PAYMENT_BACKEND_SUMMARY_DELAY_1=20
-      - PAYMENT_BACKEND_SUMMARY_DELAY_2=10
-      - PAYMENT_BACKEND_SUMMARY_DELAY_3=20
-      - PAYMENT_BACKEND_SUMMARY_DELAY_4=10
+      - PAYMENT_BACKEND_SUMMARY_DELAY_1=5
+      - PAYMENT_BACKEND_SUMMARY_DELAY_2=5
+      - PAYMENT_BACKEND_SUMMARY_DELAY_3=5
+      - PAYMENT_BACKEND_SUMMARY_DELAY_4=5
       - PAYMENT_BACKEND_WARMUP_CYCLES=500
-      - PAYMENT_BACKEND_WORKER_COUNT=10
-      - PAYMENT_BACKEND_WORKER_FALLBACK_DELAY=20
+      - PAYMENT_BACKEND_WORKER_COUNT=22
+      - PAYMENT_BACKEND_WORKER_FALLBACK_DELAY=10
       - PAYMENT_BACKEND_WORKER_THREAD_DELAY=0
-      - PAYMENT_BACKEND_WORKER_PAUSED_DELAY=50
-      - PAYMENT_BACKEND_WORKER_STOPPED_DELAY=100
-      - PAYMENT_BACKEND_WORKER_EXCEPTION_DELAY=100
+      - PAYMENT_BACKEND_WORKER_PAUSED_DELAY=40
+      - PAYMENT_BACKEND_WORKER_STOPPED_DELAY=70
+      - PAYMENT_BACKEND_WORKER_EXCEPTION_DELAY=70
       - PAYMENT_BACKEND_ENQUEUE_DELAY=10
       - HTTPCLIENT_CONNECTION_TIMEOUT=5000
       - HTTPCLIENT_READ_TIMEOUT=10000
@@ -57,27 +57,27 @@ services:
     deploy:
       resources:
         limits:
-          cpus: "0.55"
-          memory: "130MB"
+          cpus: "0.6"
+          memory: "135MB"
 
   backend-02:
     <<: *backend
-    container_name: graalvm-4-direct-backend-02
+    container_name: graalvm-4-direct-final-backend-02
     hostname: backend-02
     environment:
       - SPRING_PROFILES_ACTIVE=prod
       - PAYMENT_BACKEND_MAIN_INSTANCE=false
-      - PAYMENT_BACKEND_SUMMARY_DELAY_1=20
-      - PAYMENT_BACKEND_SUMMARY_DELAY_2=10
-      - PAYMENT_BACKEND_SUMMARY_DELAY_3=20
-      - PAYMENT_BACKEND_SUMMARY_DELAY_4=10
+      - PAYMENT_BACKEND_SUMMARY_DELAY_1=5
+      - PAYMENT_BACKEND_SUMMARY_DELAY_2=5
+      - PAYMENT_BACKEND_SUMMARY_DELAY_3=5
+      - PAYMENT_BACKEND_SUMMARY_DELAY_4=5
       - PAYMENT_BACKEND_WARMUP_CYCLES=500
-      - PAYMENT_BACKEND_WORKER_COUNT=10
-      - PAYMENT_BACKEND_WORKER_FALLBACK_DELAY=20
+      - PAYMENT_BACKEND_WORKER_COUNT=22
+      - PAYMENT_BACKEND_WORKER_FALLBACK_DELAY=10
       - PAYMENT_BACKEND_WORKER_THREAD_DELAY=0
-      - PAYMENT_BACKEND_WORKER_PAUSED_DELAY=50
-      - PAYMENT_BACKEND_WORKER_STOPPED_DELAY=100
-      - PAYMENT_BACKEND_WORKER_EXCEPTION_DELAY=100
+      - PAYMENT_BACKEND_WORKER_PAUSED_DELAY=40
+      - PAYMENT_BACKEND_WORKER_STOPPED_DELAY=70
+      - PAYMENT_BACKEND_WORKER_EXCEPTION_DELAY=70
       - PAYMENT_BACKEND_ENQUEUE_DELAY=10
       - HTTPCLIENT_CONNECTION_TIMEOUT=5000
       - HTTPCLIENT_READ_TIMEOUT=10000
@@ -93,8 +93,8 @@ services:
 
   redis:
     image: redis:7-alpine
-    container_name: graalvm-4-direct-redis
-    command: redis-server --save "" --appendonly no --maxmemory 30Mb --maxmemory-policy allkeys-lru --tcp-keepalive 60 --timeout 0
+    container_name: graalvm-4-direct-final-redis
+    command: redis-server --save "" --appendonly no --maxmemory 20Mb --maxmemory-policy allkeys-lru --tcp-keepalive 60 --timeout 0
     # ports:
     #   - "6379:6379"
     networks:
@@ -108,7 +108,7 @@ services:
       resources:
         limits:
           cpus: "0.1"
-          memory: "30MB" #Change in command line too.
+          memory: "20MB" #Change in command line too.
 
 networks:
   backend:
